@@ -107,7 +107,8 @@ class Chef
         else
           URI.parse("#{url.scheme}://#{proxy}")
         end if String === proxy
-        excludes = Chef::Config[:no_proxy].to_s.split(/\s*,\s*/).compact
+        no_proxy = Chef::Config[:no_proxy] || ENV['NO_PROXY'] || ENV['no_proxy']
+        excludes = no_proxy.to_s.split(/\s*,\s*/).compact
         excludes = excludes.map { |exclude| exclude =~ /:\d+$/ ? exclude : "#{exclude}:*" }
         return proxy unless excludes.any? { |exclude| File.fnmatch(exclude, "#{host}:#{port}") }
       end
